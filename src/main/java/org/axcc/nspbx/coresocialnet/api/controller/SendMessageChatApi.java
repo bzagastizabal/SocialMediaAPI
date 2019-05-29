@@ -26,6 +26,7 @@ public class SendMessageChatApi {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SendMessageChatApi.class);
     private static String uuid = "";
     private static Long smuserid = null;
+    private static PrintWriter out = null;
     @RequestMapping(value = "/SendMessageChatApi", method = RequestMethod.POST)
     @ResponseBody
     public void SendMessageChatApi(HttpServletRequest request, HttpServletResponse response) {
@@ -36,6 +37,7 @@ public class SendMessageChatApi {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) {
         try {
+            out = response.getWriter();
             response.setContentType("text/html;charset=UTF-8");
             
             
@@ -87,7 +89,7 @@ public class SendMessageChatApi {
                          */
                         JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
                         
-                        try (PrintWriter out = response.getWriter()) {
+                        try{
                             /*Logger logger = Logger.getLogger("MyLog");
                             FileHandler fh;
                             fh = new FileHandler("D:\\NetBeansProjects\\TwilioWeb\\log\\apache.log");
@@ -110,11 +112,14 @@ public class SendMessageChatApi {
 
                             //logger.info(json.toJSONString());
                             out.print(obj);
-                        } catch (IOException ex) {
-                            Logger.getLogger(SendMessageChatApi.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (Exception ex) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("error",ex);
+                            out.print(obj);
+                            logger.error(ex.getMessage());
                         }
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(SendMessageChatApi.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.error(ex.getMessage());
                     }
                 } else {
                     JSONObject datos = data.findByPhone(phone_number);
@@ -122,7 +127,7 @@ public class SendMessageChatApi {
                     smuserid = Long.parseLong(datos.get("smuserid").toString());
                     data.saveMessage(uuid, Body, phone_number);
                     
-                    try (PrintWriter out = response.getWriter()) {
+                    try{
                         Thread.sleep(500);
                         JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
                         /*Logger logger = Logger.getLogger("MyLog");
@@ -147,7 +152,10 @@ public class SendMessageChatApi {
 
                         //logger.info(json.toJSONString());
                         out.print(obj);
-                    } catch (InterruptedException | IOException ex) {
+                    } catch (InterruptedException ex) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("error",ex);
+                        out.print(obj);
                         logger.error(ex.getMessage());
                     }
                 }
@@ -156,7 +164,7 @@ public class SendMessageChatApi {
                 logger.info("fromMe: False");
             }
             
-        } catch (ParseException ex) {
+        } catch (IOException | ParseException ex) {
             logger.error(ex.getMessage());
         }
         
