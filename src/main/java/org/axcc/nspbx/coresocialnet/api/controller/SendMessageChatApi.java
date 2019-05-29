@@ -109,7 +109,7 @@ public class SendMessageChatApi {
                             obj.put("newSession", true);
 
                             //logger.info(json.toJSONString());
-                            out.print(json);
+                            out.print(obj);
                         } catch (IOException ex) {
                             Logger.getLogger(SendMessageChatApi.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -146,11 +146,12 @@ public class SendMessageChatApi {
                         obj.put("newSession", false);
 
                         //logger.info(json.toJSONString());
-                        out.print(json);
+                        out.print(obj);
                     } catch (InterruptedException | IOException ex) {
                         logger.error(ex.getMessage());
                     }
                 }
+                data.saveMessage(uuid, Body, phone_number);
             } else {
                 logger.info("fromMe: False");
             }
