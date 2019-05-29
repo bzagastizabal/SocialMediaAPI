@@ -5,136 +5,88 @@
  */
 package org.axcc.nspbx.coresocialnet.model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  *
  * @author Admin
  */
-public class Data {
-    Statement stmt = null;
-    ResultSet rs = null;
-    Connection con = null;
-    PreparedStatement pst = null;
-    public JSONObject getClientInformation(String token){
-        JSONObject json = new JSONObject();
-        JSONParser parser = new JSONParser();
-        SqlConnection connection = new SqlConnection();
-        con = connection.createConnection();
-        String sql = "SELECT clientInformation FROM smtbusersession WHERE uuid='"+token+"'";
-        try {
-            stmt = con.createStatement();
-            rs =stmt.executeQuery(sql);
-            while(rs.next()){
-                String clientInformation = rs.getString(1);
-                json = (JSONObject)parser.parse(clientInformation);                
-            }
-            con.close();
-            rs.close();
-        } catch (SQLException | ParseException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return json;
+public class Data extends JdbcTemplate {
+
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Data.class);
+
+    private DriverManagerDataSource basicdataSource;
+
+    public Data() {
+        basicdataSource = new DriverManagerDataSource();
+        basicdataSource.setUrl("jdbc:mysql://localhost/aaccmod");
+        basicdataSource.setUsername("root");
+        basicdataSource.setPassword("sysserver02");
+        basicdataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        this.setDataSource(basicdataSource);
     }
-    
-    public boolean isNewConnection(String phone){
+
+    public JSONObject getClientInformation(String token) {
+        try {
+            JSONObject json = new JSONObject();
+            JSONParser parser = new JSONParser();
+
+            String sql = "SELECT clientInformation FROM smtbusersession WHERE uuid='" + token + "'";
+
+            String clientInformation = this.queryForObject(sql, String.class);
+            json = (JSONObject) parser.parse(clientInformation);
+
+            return json;
+        } catch (ParseException ex) {
+            logger.error(ex.getMessage());
+        }
+        return null;
+    }
+
+    public boolean isNewConnection(String phone) {
         boolean isNew = false;
         JSONObject json = new JSONObject();
-        json.put("master-id",phone);
-        SqlConnection connection = new SqlConnection();
-        con = connection.createConnection();
-        String sql = "SELECT endSession FROM smtbusersession WHERE clientInformation='"+json+"' AND endSession is null";
-        int cont=0;
-        try {
-            stmt = con.createStatement();
-            rs =stmt.executeQuery(sql);
-            while(rs.next()){
-                cont++;                
-            }
-            if(cont==0)
-                isNew=true;
-            
-            con.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        json.put("master-id", phone);
+        String sql = "SELECT endSession FROM smtbusersession WHERE clientInformation='" + json + "' AND endSession is null";
+        int cont = 0;
+        cont = this.queryForList(sql).size();
+        if (cont == 0) {
+            isNew = true;
         }
         return isNew;
     }
-    
-    public JSONObject findByPhone(String phone_number){
+
+    public JSONObject findByPhone(String phone_number) {
         JSONObject obj = new JSONObject();
         JSONObject clientInformation = new JSONObject();
-        clientInformation.put("master-id",phone_number);
-        SqlConnection connection = new SqlConnection();
-        con = connection.createConnection();
-        String sql = "SELECT uuid,userIdSession FROM smtbusersession WHERE clientInformation='"+clientInformation+"' AND endSession is null";
-        try {
-            stmt = con.createStatement();            
-            rs =stmt.executeQuery(sql);
-            while(rs.next()){
-                obj.put("smuserid",rs.getInt("userIdSession"));
-                obj.put("token",rs.getString("uuid"));
-            }
-            
-            con.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        clientInformation.put("master-id", phone_number);
+        String sql = "SELECT uuid,userIdSession FROM smtbusersession WHERE clientInformation='" + clientInformation + "' AND endSession is null";
+
+        Map<String, Object> queryForMap = this.queryForMap(sql);
+        obj.put("smuserid", queryForMap.get("userIdSession"));
+        obj.put("token", queryForMap.get("uuid"));
         return obj;
     }
-    
-    public boolean saveMessage(String token,String message,String phone){
-        boolean saved=false;
-        SqlConnection connection = new SqlConnection();
-        con = connection.createConnection();
+
+    public boolean saveMessage(String token, String message, String phone) {
+        boolean saved = false;
         String sql = "INSERT INTO tbmessage (body,token,phone) VALUES (?,?,?)";
-        try{
-            pst = con.prepareStatement(sql);
-            pst.setString(1, message);
-            pst.setString(2, token);
-            pst.setString(3, phone);
-            pst.executeUpdate();
-            rs = pst.getResultSet();
-            int cont = pst.getUpdateCount();
-            if(cont==1)
-            con.close();
-                saved=true;
-            pst.close();
-        }catch(SQLException ex){
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        int cont = this.update(sql, new Object[]{token, message, phone});
+        if (cont == 1) {
+            saved = true;
         }
         return saved;
     }
-    
-    public Long getReceiver (String token)
-    {
+
+    public Long getReceiver(String token) {
         Long receiver = 0L;
-        SqlConnection connection = new SqlConnection();
-        con = connection.createConnection();
-        String sql = "SELECT userIdTwo FROM smchatchannel WHERE uuid='"+token+"'";
-        try {
-            stmt = con.createStatement();
-            rs =stmt.executeQuery(sql);
-            while(rs.next()){
-                receiver = rs.getLong(1);             
-            }
-            con.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String sql = "SELECT userIdTwo FROM smchatchannel WHERE uuid='" + token + "'";
+        receiver = this.queryForObject(sql, Long.class);
         return receiver;
     }
 }

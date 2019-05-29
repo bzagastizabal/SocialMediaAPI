@@ -21,7 +21,7 @@
     </servlet-mapping>
     <context-param>
         <param-name>log4jConfigLocation</param-name>
-        <param-value>classpath:nspbx/log4j.properties</param-value>
+        <param-value>classpath:nspbx/log4j_socialmedia.properties</param-value>
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>

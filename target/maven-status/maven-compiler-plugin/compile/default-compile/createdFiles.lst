@@ -4,6 +4,7 @@ org\axcc\nspbx\coresocialnet\api\model\utils\ChatApi.class
 org\axcc\nspbx\coresocialnet\model\Data.class
 org\axcc\nspbx\coresocialnet\api\controller\ReceiveMessageChatApi.class
 org\axcc\nspbx\coresocialnet\api\controller\SendMessageChatApi.class
+org\axcc\nspbx\coresocialnet\model\ApplicationContextProvider.class
 org\axcc\nspbx\coresocialnet\api\common\SystemProperties.class
 org\axcc\nspbx\coresocialnet\model\SqlConnection.class
 org\axcc\nspbx\coresocialnet\api\service\AsteriskCoreService.class

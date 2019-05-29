@@ -77,17 +77,17 @@ public class SendMessageChatApi {
             if (!fromMe) {
                 boolean isNewConnection = data.isNewConnection(phone_number);
                 if (isNewConnection) {
-                    JSONObject connection = chat_api.createConnection(phone_number);
+                    org.json.JSONObject connection = chat_api.createConnection(phone_number);
                     
                     smuserid = (Long) connection.get("smuserid");
-                    uuid = (String) connection.get("token");
+                    uuid = (String) connection.get("uuid");
                     data.saveMessage(uuid, Body, phone_number);
                     try {
                         Thread.sleep(500);
                         /**
                          * Send Message to Asesor *
                          */
-                        JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
+                        org.json.JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
                         
                         try{
                             /*Logger logger = Logger.getLogger("MyLog");
@@ -129,7 +129,7 @@ public class SendMessageChatApi {
                     
                     try{
                         Thread.sleep(500);
-                        JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
+                        org.json.JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
                         /*Logger logger = Logger.getLogger("MyLog");
                         FileHandler fh;
                         fh = new FileHandler("D:\\NetBeansProjects\\TwilioWeb\\log\\apache.log");  
