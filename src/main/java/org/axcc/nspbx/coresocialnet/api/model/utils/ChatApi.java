@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.axcc.nspbx.coresocialnet.model.Data;
 import org.axcc.nspbx.coresocialnet.model.ReadResponse;
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ public class ChatApi {
 
     public JSONObject sendMessage(String token, String phone_number, Long smuserid, String body) {
         JSONObject obj = new JSONObject();
-        HttpClient httpClient = new DefaultHttpClient();
+        HttpClient httpClient = HttpClients.createDefault();
         HttpResponse httpresponse;
         data = new Data();
         try {
@@ -89,7 +90,7 @@ public class ChatApi {
 
             String query = queryJSON.toString();
             String url = "http://" + host + ":8080/coreservices/pages/api/user/requesting/createSMUserEx";
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Accept-Encoding", "gzip, deflate");
