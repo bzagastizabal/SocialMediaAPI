@@ -8,6 +8,7 @@ package org.axcc.nspbx.coresocialnet.api.model.utils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +55,6 @@ public class ChatApi {
             builder.setParameter("receiver", String.valueOf(receiver));
             builder.setParameter("time", time);
             builder.setParameter("message", body);
-            builder.setCharset(Charset.forName("UTF-8"));
 
             HttpGet httpGet = new HttpGet(builder.build());
             httpGet.setHeader("Content-type", "application/json");
@@ -69,10 +69,13 @@ public class ChatApi {
             obj.put("receiver", receiver);
 
         } catch (URISyntaxException ex) {
+            obj.put("error",ex);
             logger.error(ex.getMessage());
         } catch (IOException ex) {
+            obj.put("error",ex);
             logger.error(ex.getMessage());
         } catch (Exception ex) {
+            obj.put("error",ex);
             logger.error(ex.getMessage());
         }
         return obj;
@@ -114,6 +117,52 @@ public class ChatApi {
         } catch (IOException ex) {
             logger.error(ex.getMessage());
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        }
+        return obj;
+    }
+    
+    public JSONObject endSession(String token, String phone_number, Long smuserid, String body) {
+        JSONObject obj = new JSONObject();
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpResponse httpresponse;
+        data = new Data();
+        try {
+            String uuid = token;
+            String master_id = phone_number;
+            Long sender = smuserid;
+            Long receiver = data.getReceiver(token);
+            String time = String.valueOf((System.currentTimeMillis() / 1000L));
+
+            //Make url with GET params
+            URIBuilder builder = new URIBuilder("http://" + host + ":8080/coreservices/pages/api/chat/exHangup");
+            builder.setParameter("uuid", uuid);
+            builder.setParameter("master-id", master_id);
+            builder.setParameter("sender", String.valueOf(sender));
+            builder.setParameter("receiver", String.valueOf(receiver));
+            builder.setParameter("time", time);
+            builder.setParameter("message", body);
+
+            HttpGet httpGet = new HttpGet(builder.build());
+            httpGet.setHeader("Content-type", "application/json");
+            httpGet.setHeader("Accept-Encoding", "gzip, deflate");
+            httpGet.setHeader("Accept-Language", "es-ES,es;q=0.9,en;q=0.8");
+            httpGet.setHeader("X-Requested-With", "XMLHttpRequest");
+            httpresponse = httpClient.execute(httpGet);
+
+            ReadResponse reader = new ReadResponse();
+            String sb = reader.readResponse(httpresponse);
+            obj = new JSONObject(sb);
+            obj.put("receiver", receiver);
+
+        } catch (URISyntaxException ex) {
+            obj.put("error",ex);
+            logger.error(ex.getMessage());
+        } catch (IOException ex) {
+            obj.put("error",ex);
+            logger.error(ex.getMessage());
+        } catch (Exception ex) {
+            obj.put("error",ex);
             logger.error(ex.getMessage());
         }
         return obj;

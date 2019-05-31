@@ -2,6 +2,7 @@ org\axcc\nspbx\coresocialnet\api\common\UtilsProperties.class
 org\axcc\nspbx\coresocialnet\model\ReadResponse.class
 org\axcc\nspbx\coresocialnet\api\model\utils\ChatApi.class
 org\axcc\nspbx\coresocialnet\model\Data.class
+org\axcc\nspbx\coresocialnet\model\Test.class
 org\axcc\nspbx\coresocialnet\api\controller\ReceiveMessageChatApi.class
 org\axcc\nspbx\coresocialnet\api\controller\SendMessageChatApi.class
 org\axcc\nspbx\coresocialnet\api\common\SystemProperties.class

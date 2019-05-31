@@ -3,10 +3,9 @@ package org.axcc.nspbx.coresocialnet.api.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.axcc.nspbx.coresocialnet.api.model.utils.ChatApi;
@@ -38,9 +37,7 @@ public class SendMessageChatApi {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) {
         try {
             out = response.getWriter();
-            response.setContentType("text/html;charset=UTF-8");
-            
-            
+            //response.setContentType("text/html;charset=UTF-8");
             JSONParser parser = new JSONParser();
             Data data = new Data();
 
@@ -65,6 +62,7 @@ public class SendMessageChatApi {
             String[] author = messages.get("author").toString().split("@");
             String phone_number = author[0];
             String Body = (String) messages.get("body");
+            String msg = URLEncoder.encode(Body,"UTF-8");
             boolean fromMe = (boolean) messages.get("fromMe");
             SimpleDateFormat format_fecha = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat format_hora = new SimpleDateFormat("hh:mm:ss");
@@ -81,7 +79,6 @@ public class SendMessageChatApi {
                     
                     smuserid = (Long) connection.get("smuserid");
                     uuid = (String) connection.get("uuid");
-                    data.saveMessage(uuid, Body, phone_number);
                     try {
                         Thread.sleep(500);
                         /**
@@ -100,7 +97,8 @@ public class SendMessageChatApi {
                             obj.put("Fecha", fecha);
                             obj.put("HoraRecepcion", hora);
                             obj.put("NumeroOrigen", phone_number);
-                            obj.put("Mensaje", Body);
+                            obj.put("Body", Body);
+                            obj.put("Mensaje", msg);
                             obj.put("Costo", "0.005");
                             obj.put("DateTimeWic", String.valueOf(unixTime));
                             obj.put("EstadoLectura", 0);
@@ -118,18 +116,17 @@ public class SendMessageChatApi {
                             out.print(obj);
                             logger.error(ex.getMessage());
                         }
+                        data.saveMessage(uuid, Body, phone_number,1);
                     } catch (InterruptedException ex) {
                         logger.error(ex.getMessage());
                     }
                 } else {
                     JSONObject datos = data.findByPhone(phone_number);
                     uuid = (String) datos.get("token");
-                    smuserid = Long.parseLong(datos.get("smuserid").toString());
-                    data.saveMessage(uuid, Body, phone_number);
-                    
+                    smuserid = Long.parseLong(datos.get("smuserid").toString());                    
                     try{
                         Thread.sleep(500);
-                        org.json.JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, Body);
+                        org.json.JSONObject response3 = chat_api.sendMessage(uuid, phone_number, smuserid, msg);
                         /*Logger logger = Logger.getLogger("MyLog");
                         FileHandler fh;
                         fh = new FileHandler("D:\\NetBeansProjects\\TwilioWeb\\log\\apache.log");  
@@ -140,7 +137,8 @@ public class SendMessageChatApi {
                         obj.put("Fecha", fecha);
                         obj.put("HoraRecepcion", hora);
                         obj.put("NumeroOrigen", phone_number);
-                        obj.put("Mensaje", Body);
+                        obj.put("Body",Body);
+                        obj.put("Mensaje", msg);
                         obj.put("Costo", "0.005");
                         obj.put("DateTimeWic", String.valueOf(unixTime));
                         obj.put("EstadoLectura", 0);
@@ -152,22 +150,19 @@ public class SendMessageChatApi {
 
                         //logger.info(json.toJSONString());
                         out.print(obj);
+                        data.saveMessage(uuid, msg, phone_number,1);
                     } catch (InterruptedException ex) {
                         JSONObject obj = new JSONObject();
                         obj.put("error",ex);
                         out.print(obj);
                         logger.error(ex.getMessage());
                     }
-                }
-                data.saveMessage(uuid, Body, phone_number);
+                }       
             } else {
                 logger.info("fromMe: False");
-            }
-            
+            }            
         } catch (IOException | ParseException ex) {
             logger.error(ex.getMessage());
-        }
-        
+        }   
     }
-    
 }

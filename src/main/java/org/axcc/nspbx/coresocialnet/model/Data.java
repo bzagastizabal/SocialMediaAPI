@@ -73,10 +73,12 @@ public class Data extends JdbcTemplate {
         return obj;
     }
 
-    public boolean saveMessage(String token, String message, String phone) {
+    public boolean saveMessage(String token, String message, String phone,int fromMe) {
         boolean saved = false;
-        String sql = "INSERT INTO tbmessage (body,token,phone) VALUES (?,?,?)";
-        int cont = this.update(sql, new Object[]{token, message, phone});
+        //0 is from user
+        //1 is from asesor
+        String sql = "INSERT INTO tbmessage (body,token,phone,fromMe) VALUES (?,?,?,?)";
+        int cont = this.update(sql, new Object[]{token, message, phone,fromMe});
         if (cont == 1) {
             saved = true;
         }
