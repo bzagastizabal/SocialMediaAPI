@@ -13,14 +13,6 @@
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
-    <servlet>
-        <servlet-name>InstanceAPI</servlet-name>
-        <servlet-class>org.axcc.nspbx.coresocialnet.api.controller.CrudInstanceApi</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>socialmediaapi-servlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
     <context-param>
         <param-name>log4jConfigLocation</param-name>
         <param-value>classpath:nspbx/log4j_socialmedia.properties</param-value>
@@ -31,11 +23,5 @@
             /WEB-INF/spring-base.xml
         </param-value>
     </context-param>
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-    <servlet-mapping>
-        <servlet-name>CrudInstanceAPI</servlet-name>
-        <url-pattern>/CrudInstanceAPI</url-pattern>
-    </servlet-mapping>
+
 </web-app>

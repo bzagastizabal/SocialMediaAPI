@@ -31,7 +31,7 @@ import org.json.JSONObject;
 public class ChatApi {
 
     private final String host = "localhost";
-    private final String port = "8090";
+    private final String port = "8080";
     Data data;
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ChatApi.class);

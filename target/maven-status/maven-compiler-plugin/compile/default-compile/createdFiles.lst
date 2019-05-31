@@ -9,4 +9,3 @@ org\axcc\nspbx\coresocialnet\api\controller\SendMessageChatApi.class
 org\axcc\nspbx\coresocialnet\api\common\SystemProperties.class
 org\axcc\nspbx\coresocialnet\model\SqlConnection.class
 org\axcc\nspbx\coresocialnet\api\service\AsteriskCoreService.class
-org\axcc\nspbx\coresocialnet\api\controller\CrudInstanceApi.class
