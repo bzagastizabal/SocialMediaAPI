@@ -14,10 +14,6 @@
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
     <servlet>
-        <servlet-name>DeleteInstance</servlet-name>
-        <servlet-class>org.axcc.nspbx.coresocialnet.api.controller.DeleteInstance</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>InstanceAPI</servlet-name>
         <servlet-class>org.axcc.nspbx.coresocialnet.api.controller.InstanceAPI</servlet-class>
     </servlet>
@@ -38,10 +34,6 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-    <servlet-mapping>
-        <servlet-name>DeleteInstance</servlet-name>
-        <url-pattern>/DeleteInstance</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>InstanceAPI</servlet-name>
         <url-pattern>/InstanceAPI</url-pattern>

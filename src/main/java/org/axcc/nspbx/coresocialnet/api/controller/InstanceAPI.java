@@ -41,6 +41,22 @@ public class InstanceAPI extends HttpServlet {
         processRequest(request, response);
     }
     
+    @RequestMapping(value = "/CreateInstance", method = RequestMethod.POST)
+    @ResponseBody
+    public void CreateInstance(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+        processRequest(request, response);
+    }
+    
+    @RequestMapping(value = "/GetInstance", method = RequestMethod.POST)
+    @ResponseBody
+    public void GetInstance(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+        processRequest(request, response);
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response){
         response.setContentType("text/html;charset=UTF-8");
         try{
