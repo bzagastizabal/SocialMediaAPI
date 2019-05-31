@@ -6,6 +6,7 @@
 package org.axcc.nspbx.coresocialnet.model;
 
 import java.util.Map;
+import org.axcc.nspbx.coresocialnet.api.model.utils.InstanceApi;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -90,5 +91,32 @@ public class Data extends JdbcTemplate {
         String sql = "SELECT userIdTwo FROM smchatchannel WHERE uuid='" + token + "'";
         receiver = this.queryForObject(sql, Long.class);
         return receiver;
+    }
+    
+    public boolean deleteInstance(int instanceId,String acc){
+        boolean deleted = false;
+        String sql = "DELETE FROM tbinstance WHERE instanceId=? AND aacc=?";
+        deleted = this.queryForObject(sql, Boolean.class);
+        return deleted;
+    }
+    
+    public boolean createInstance(InstanceApi instance){
+        boolean created = false;
+        String sql = "INSERT INTO tbinstance (instanceId,phone_number,webhook,token,skill_id,aacc,idEngineDial,custom_parameters,socialmediaID) "
+                + "VALUES (?,?,?,?,?,?,?,?,?)";
+        int cont = this.update(sql, new Object[]{
+            instance.token,
+            instance.phone_number,
+            instance.webhook,
+            instance.token,
+            instance.skill_id,
+            instance.aacc,
+            instance.idEngineDial,
+            instance.custom_parameters,
+            instance.socialmediaID});
+        if (cont == 1) {
+            created = true;
+        }
+        return created;
     }
 }

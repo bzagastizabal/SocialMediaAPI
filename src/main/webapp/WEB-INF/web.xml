@@ -15,7 +15,7 @@
     </listener>
     <servlet>
         <servlet-name>InstanceAPI</servlet-name>
-        <servlet-class>org.axcc.nspbx.coresocialnet.api.controller.InstanceAPI</servlet-class>
+        <servlet-class>org.axcc.nspbx.coresocialnet.api.controller.CrudInstanceApi</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>socialmediaapi-servlet</servlet-name>
@@ -35,7 +35,7 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <servlet-mapping>
-        <servlet-name>InstanceAPI</servlet-name>
-        <url-pattern>/InstanceAPI</url-pattern>
+        <servlet-name>CrudInstanceAPI</servlet-name>
+        <url-pattern>/CrudInstanceAPI</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -30,7 +30,8 @@ import org.json.JSONObject;
  */
 public class ChatApi {
 
-    private final String host = "54.39.1.25";
+    private final String host = "localhost";
+    private final String port = "8090";
     Data data;
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ChatApi.class);
@@ -48,7 +49,7 @@ public class ChatApi {
             String time = String.valueOf((System.currentTimeMillis() / 1000L));
 
             //Make url with GET params
-            URIBuilder builder = new URIBuilder("http://" + host + ":8080/coreservices/pages/api/chat/exMessage");
+            URIBuilder builder = new URIBuilder("http://" + host + ":"+port+"/coreservices/pages/api/chat/exMessage");
             builder.setParameter("uuid", uuid);
             builder.setParameter("master-id", master_id);
             builder.setParameter("sender", String.valueOf(sender));
@@ -165,6 +166,13 @@ public class ChatApi {
             obj.put("error",ex);
             logger.error(ex.getMessage());
         }
+        return obj;
+    }
+    
+    public org.json.simple.JSONObject deleteInstance(int id){
+        org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
+        Data data = new Data();
+        
         return obj;
     }
 }
